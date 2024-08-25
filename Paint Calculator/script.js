@@ -19,7 +19,7 @@ document.getElementById('add-wall').addEventListener('click', function() {
 
     // Create Width Input
     const widthLabel = document.createElement('label');
-    widthLabel.textContent = 'Width (meters):';
+    widthLabel.textContent = 'Width';
     const widthInput = document.createElement('input');
     widthInput.type = 'number';
     widthInput.name = 'width';
@@ -29,7 +29,7 @@ document.getElementById('add-wall').addEventListener('click', function() {
 
     // Create Height Input
     const heightLabel = document.createElement('label');
-    heightLabel.textContent = 'Height (meters):';
+    heightLabel.textContent = 'Height';
     const heightInput = document.createElement('input');
     heightInput.type = 'number';
     heightInput.name = 'height';
@@ -98,7 +98,7 @@ document.getElementById('area-form').addEventListener('submit', function(e) {
 
     const excludeArea = parseFloat(document.getElementById('exclude-area').value.replace(',', '.'));
     const coats = parseInt(document.getElementById('coats').value);
-    const litersPerSqM = parseFloat(document.getElementById('liters-per-sqm').value.replace(',', '.'));
+    const litersPerSqM = 0.1;
 
     if (isNaN(excludeArea) || isNaN(coats) || isNaN(litersPerSqM) || excludeArea < 0 || coats < 1 || litersPerSqM <= 0) {
         document.getElementById('result').innerText = "Please enter valid values.";
@@ -126,7 +126,7 @@ document.getElementById('area-form').addEventListener('submit', function(e) {
     litersText.textContent = `You will need ${totalLiters.toFixed(2)} litres of paint`;
 
     const areaText = document.createElement('p');
-    areaText.textContent = `Based on your total area of ${totalArea.toFixed(2)}m² and +10% extra material.`;
+    areaText.textContent = `Based on your total area of ${totalWallArea.toFixed(2)}m² and +10% extra material.`;
 
     const coverageText = document.createElement('p');
     coverageText.textContent = `This is based on a coverage of ${(1 / litersPerSqM).toFixed(2)}m² per litre of paint. Always check the coverage on the tin before buying.`;
