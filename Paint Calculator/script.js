@@ -1,8 +1,21 @@
 document.getElementById('add-wall').addEventListener('click', function() {
     const wallsContainer = document.getElementById('walls-container');
+    const wallGroups = document.querySelectorAll('.wall-group');
+    const wallNumber = wallGroups.length + 1;
 
+    // Create the wall group container
     const newWallGroup = document.createElement('div');
     newWallGroup.className = 'input-group wall-group';
+
+    // Create the Wall Number Text
+    const wallNumberText = document.createElement('p');
+    const wallNumberStrong = document.createElement('strong');
+    wallNumberStrong.textContent = `Wall ${wallNumber}`;
+    wallNumberText.appendChild(wallNumberStrong);
+
+    // Create the flexbox container
+    const flexboxContainer = document.createElement('div');
+    flexboxContainer.className = 'wall-flexbox-container';
 
     // Create Width Input
     const widthLabel = document.createElement('label');
@@ -24,15 +37,41 @@ document.getElementById('add-wall').addEventListener('click', function() {
     heightInput.step = '0.01';
     heightInput.required = true;
 
-    // Append all elements to the newWallGroup
-    newWallGroup.appendChild(widthLabel);
-    newWallGroup.appendChild(widthInput);
-    newWallGroup.appendChild(heightLabel);
-    newWallGroup.appendChild(heightInput);
+    // Create Delete Button
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.className = 'delete-wall';
+    deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+    
+    // Add event listener to delete the wall group
+    deleteButton.addEventListener('click', function() {
+        wallsContainer.removeChild(newWallGroup);
+        updateWallNumbers(); // Update the wall numbers after deletion
+    });
 
-    // Append the newWallGroup to the wallsContainer
+    // Append label, input fields, and delete button to the flexbox container
+    flexboxContainer.appendChild(widthLabel);
+    flexboxContainer.appendChild(widthInput);
+    flexboxContainer.appendChild(heightLabel);
+    flexboxContainer.appendChild(heightInput);
+    flexboxContainer.appendChild(deleteButton);
+
+    // Append the Wall Number and Flexbox Container to the new Wall Group
+    newWallGroup.appendChild(wallNumberText);
+    newWallGroup.appendChild(flexboxContainer);
+
+    // Append the new Wall Group to the wallsContainer
     wallsContainer.appendChild(newWallGroup);
 });
+
+// Function to update wall numbers after a wall is deleted
+function updateWallNumbers() {
+    const wallGroups = document.querySelectorAll('.wall-group');
+    wallGroups.forEach((group, index) => {
+        const wallNumberText = group.querySelector('p strong');
+        wallNumberText.textContent = `Wall ${index + 1}`;
+    });
+}
 
 document.getElementById('area-form').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -80,7 +119,7 @@ document.getElementById('area-form').addEventListener('submit', function(e) {
 
     // Clear previous results
     const resultElement = document.getElementById('result');
-    resultElement.innerHTML = '';
+    resultElement.innerHTML = ''; // Clear previous results
 
     // Create elements to display the results
     const litersText = document.createElement('p');

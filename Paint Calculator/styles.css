@@ -20,6 +20,44 @@ body {
     width: 100%;
 }
 
+.wall-flexbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.wall-flexbox-container label, 
+.wall-flexbox-container input {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.wall-flexbox-container label {
+    width: 150px;
+}
+
+.wall-flexbox-container input {
+    max-width: 100px;
+}
+
+.delete-wall {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.delete-wall i {
+    margin: 0;
+}
+
+.delete-wall:hover {
+    background-color: #c82333;
+}
+
 h1, h2 {
     margin-bottom: 20px;
 }
