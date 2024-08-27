@@ -3,21 +3,15 @@ document.getElementById('add-wall').addEventListener('click', function() {
     const wallGroups = document.querySelectorAll('.wall-group');
     const wallNumber = wallGroups.length + 1;
 
-    // Create the wall group container
     const newWallGroup = document.createElement('div');
     newWallGroup.className = 'input-group wall-group';
 
-    // Create the Wall Number Text
     const wallNumberText = document.createElement('p');
-    const wallNumberStrong = document.createElement('strong');
-    wallNumberStrong.textContent = `Wall ${wallNumber}`;
-    wallNumberText.appendChild(wallNumberStrong);
+    wallNumberText.innerHTML = `<strong>Wall ${wallNumber}</strong>`;
 
-    // Create the flexbox container
     const flexboxContainer = document.createElement('div');
-    flexboxContainer.className = 'wall-flexbox-container';
+    flexboxContainer.className = 'flexbox-container';
 
-    // Create Width Input
     const widthLabel = document.createElement('label');
     widthLabel.textContent = 'Width';
     const widthInput = document.createElement('input');
@@ -27,7 +21,6 @@ document.getElementById('add-wall').addEventListener('click', function() {
     widthInput.step = '0.01';
     widthInput.required = true;
 
-    // Create Height Input
     const heightLabel = document.createElement('label');
     heightLabel.textContent = 'Height';
     const heightInput = document.createElement('input');
@@ -37,76 +30,130 @@ document.getElementById('add-wall').addEventListener('click', function() {
     heightInput.step = '0.01';
     heightInput.required = true;
 
-    // Create Delete Button
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
-    deleteButton.className = 'delete-wall';
+    deleteButton.className = 'delete-button';
     deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
-    
-    // Add event listener to delete the wall group
     deleteButton.addEventListener('click', function() {
         wallsContainer.removeChild(newWallGroup);
-        updateWallNumbers(); // Update the wall numbers after deletion
+        updateWallNumbers();
     });
 
-    // Append label, input fields, and delete button to the flexbox container
     flexboxContainer.appendChild(widthLabel);
     flexboxContainer.appendChild(widthInput);
     flexboxContainer.appendChild(heightLabel);
     flexboxContainer.appendChild(heightInput);
     flexboxContainer.appendChild(deleteButton);
 
-    // Append the Wall Number and Flexbox Container to the new Wall Group
     newWallGroup.appendChild(wallNumberText);
     newWallGroup.appendChild(flexboxContainer);
-
-    // Append the new Wall Group to the wallsContainer
     wallsContainer.appendChild(newWallGroup);
 });
 
-// Function to update wall numbers after a wall is deleted
-function updateWallNumbers() {
-    const wallGroups = document.querySelectorAll('.wall-group');
-    wallGroups.forEach((group, index) => {
-        const wallNumberText = group.querySelector('p strong');
-        wallNumberText.textContent = `Wall ${index + 1}`;
+document.getElementById('add-area').addEventListener('click', function() {
+    const areasContainer = document.getElementById('areas-container');
+    const areaGroups = document.querySelectorAll('.exclude-area-group');
+    const areaNumber = areaGroups.length + 1;
+
+    const newAreaGroup = document.createElement('div');
+    newAreaGroup.className = 'input-group exclude-area-group';
+
+    const areaNumberText = document.createElement('p');
+    areaNumberText.innerHTML = `<strong>Area ${areaNumber}</strong>`;
+
+    const flexboxContainer = document.createElement('div');
+    flexboxContainer.className = 'flexbox-container';
+
+    const widthLabel = document.createElement('label');
+    widthLabel.textContent = 'Width';
+    const widthInput = document.createElement('input');
+    widthInput.type = 'number';
+    widthInput.name = 'width';
+    widthInput.className = 'width';
+    widthInput.step = '0.01';
+    widthInput.required = true;
+
+    const heightLabel = document.createElement('label');
+    heightLabel.textContent = 'Height';
+    const heightInput = document.createElement('input');
+    heightInput.type = 'number';
+    heightInput.name = 'height';
+    heightInput.className = 'height';
+    heightInput.step = '0.01';
+    heightInput.required = true;
+
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.className = 'delete-button';
+    deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+    deleteButton.addEventListener('click', function() {
+        areasContainer.removeChild(newAreaGroup);
+        updateAreaNumbers();
     });
-}
+
+    flexboxContainer.appendChild(widthLabel);
+    flexboxContainer.appendChild(widthInput);
+    flexboxContainer.appendChild(heightLabel);
+    flexboxContainer.appendChild(heightInput);
+    flexboxContainer.appendChild(deleteButton);
+
+    newAreaGroup.appendChild(areaNumberText);
+    newAreaGroup.appendChild(flexboxContainer);
+    areasContainer.appendChild(newAreaGroup);
+});
 
 document.getElementById('area-form').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    const widths = document.querySelectorAll('.width');
-    const heights = document.querySelectorAll('.height');
+    const wallWidths = document.querySelectorAll('.wall-group .width');
+    const wallHeights = document.querySelectorAll('.wall-group .height');
+    const areaWidths = document.querySelectorAll('.exclude-area-group .width');
+    const areaHeights = document.querySelectorAll('.exclude-area-group .height');
 
     let totalWallArea = 0;
+    let totalExcludeArea = 0;
 
-    for (let i = 0; i < widths.length; i++) {
-        const width = parseFloat(widths[i].value.replace(',', '.'));
-        const height = parseFloat(heights[i].value.replace(',', '.'));
+    for (let i = 0; i < wallWidths.length; i++) {
+        const width = parseFloat(wallWidths[i].value.replace(',', '.').trim());
+        const height = parseFloat(wallHeights[i].value.replace(',', '.').trim());
 
         if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
             document.getElementById('result').innerText = "Please enter valid values for all walls.";
             return;
         }
 
-        // Calculate wall area for each wall
         const wallArea = width * height;
-
         totalWallArea += wallArea;
     }
 
-    const excludeArea = parseFloat(document.getElementById('exclude-area').value.replace(',', '.'));
+    for (let i = 0; i < areaWidths.length; i++) {
+        const width = parseFloat(areaWidths[i].value.replace(',', '.').trim());
+        const height = parseFloat(areaHeights[i].value.replace(',', '.').trim());
+
+        // If width and height are not provided, skip this iteration
+        if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
+            continue;
+        }
+
+        const excludeArea = width * height;
+        totalExcludeArea += excludeArea;
+    }
+
     const coats = parseInt(document.getElementById('coats').value);
     const litersPerSqM = 0.1;
 
-    if (isNaN(excludeArea) || isNaN(coats) || isNaN(litersPerSqM) || excludeArea < 0 || coats < 1 || litersPerSqM <= 0) {
+    if (isNaN(coats) || coats < 1 || litersPerSqM <= 0) {
         document.getElementById('result').innerText = "Please enter valid values.";
         return;
     }
 
-    // Total area to paint excluding windows/doors
-    const totalAreaPerCoat = totalWallArea - excludeArea;
+    // Total area to paint excluding areas
+    const totalAreaPerCoat = totalWallArea - totalExcludeArea;
+
+    if (totalAreaPerCoat <= 0) {
+        document.getElementById('result').innerText = "Excluded areas cannot be greater than the total wall area.";
+        return;
+    }
 
     // Total area for all coats
     const totalArea = totalAreaPerCoat * coats;
@@ -126,7 +173,7 @@ document.getElementById('area-form').addEventListener('submit', function(e) {
     litersText.textContent = `You will need ${totalLiters.toFixed(2)} litres of paint`;
 
     const areaText = document.createElement('p');
-    areaText.textContent = `Based on your total area of ${totalWallArea.toFixed(2)}m² and +10% extra material.`;
+    areaText.textContent = `Based on your total area of ${totalAreaPerCoat.toFixed(2)}m² and +10% extra material.`;
 
     const coverageText = document.createElement('p');
     coverageText.textContent = `This is based on a coverage of ${(1 / litersPerSqM).toFixed(2)}m² per litre of paint. Always check the coverage on the tin before buying.`;
@@ -140,3 +187,19 @@ document.getElementById('area-form').addEventListener('submit', function(e) {
     resultElement.appendChild(coverageText);
     resultElement.appendChild(extraText);
 });
+
+function updateWallNumbers() {
+    const wallGroups = document.querySelectorAll('.wall-group');
+    wallGroups.forEach((group, index) => {
+        const wallNumberText = group.querySelector('p strong');
+        wallNumberText.textContent = `Wall ${index + 1}`;
+    });
+}
+
+function updateAreaNumbers() {
+    const areaGroups = document.querySelectorAll('.exclude-area-group');
+    areaGroups.forEach((group, index) => {
+        const areaNumberText = group.querySelector('p strong');
+        areaNumberText.textContent = `Area ${index + 1}`;
+    });
+}
