@@ -109,6 +109,7 @@ document.getElementById('area-form').addEventListener('submit', function(e) {
     const wallHeights = document.querySelectorAll('.wall-group .height');
     const areaWidths = document.querySelectorAll('.exclude-area-group .width');
     const areaHeights = document.querySelectorAll('.exclude-area-group .height');
+    const checkboxEl = document.querySelector('.checkbox-input');    
 
     let totalWallArea = 0;
     let totalExcludeArea = 0;
@@ -163,6 +164,12 @@ document.getElementById('area-form').addEventListener('submit', function(e) {
 
     // Add 10% extra material
     totalLiters += totalLiters * 0.1;
+
+    //Add 10% bonus or no
+    debugger;
+    if(checkboxEl.checked){
+        totalLiters += totalLiters * 0.10;
+    }
 
     // Clear previous results
     const resultElement = document.getElementById('result');
