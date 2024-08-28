@@ -20,7 +20,7 @@ document.getElementById('add-wall').addEventListener('click', function () {
     widthInput.className = 'width';
     widthInput.step = '0.01';
     widthInput.required = true;
-    
+
     const widthUnitLabel = document.createElement('span');
     widthUnitLabel.className = 'unit-label';
     widthUnitLabel.textContent = getCurrentUnit();
@@ -33,7 +33,7 @@ document.getElementById('add-wall').addEventListener('click', function () {
     heightInput.className = 'height';
     heightInput.step = '0.01';
     heightInput.required = true;
-    
+
     const heightUnitLabel = document.createElement('span');
     heightUnitLabel.className = 'unit-label';
     heightUnitLabel.textContent = getCurrentUnit();
@@ -82,7 +82,7 @@ document.getElementById('add-area').addEventListener('click', function () {
     widthInput.className = 'width';
     widthInput.step = '0.01';
     widthInput.required = true;
-    
+
     const widthUnitLabel = document.createElement('span');
     widthUnitLabel.className = 'unit-label';
     widthUnitLabel.textContent = getCurrentUnit();
@@ -95,7 +95,7 @@ document.getElementById('add-area').addEventListener('click', function () {
     heightInput.className = 'height';
     heightInput.step = '0.01';
     heightInput.required = true;
-    
+
     const heightUnitLabel = document.createElement('span');
     heightUnitLabel.className = 'unit-label';
     heightUnitLabel.textContent = getCurrentUnit();
@@ -122,6 +122,105 @@ document.getElementById('add-area').addEventListener('click', function () {
     areasContainer.appendChild(newAreaGroup);
 });
 
+document.getElementById('area-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const wallWidths = document.querySelectorAll('.wall-group .width');
+    const wallHeights = document.querySelectorAll('.wall-group .height');
+    const areaWidths = document.querySelectorAll('.exclude-area-group .width');
+    const areaHeights = document.querySelectorAll('.exclude-area-group .height');
+    const checkboxEl = document.querySelector('.checkbox-input');
+
+    // Determine the selected unit system
+    const selectedUnit = document.querySelector('input[name="unit"]:checked').value;
+    const isMetric = selectedUnit === 'metric';
+
+    // Define conversion factors
+    const coveragePerLiterSqM = 10; // 1 liter covers 10 square meters (for metric)
+    const coveragePerGallonSqFt = 350; // 1 gallon covers 350 square feet (for imperial)
+
+    let totalWallArea = 0;
+    let totalExcludeArea = 0;
+
+    for (let i = 0; i < wallWidths.length; i++) {
+        let width = parseFloat(wallWidths[i].value.replace(',', '.').trim());
+        let height = parseFloat(wallHeights[i].value.replace(',', '.').trim());
+
+        if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
+            document.getElementById('result').innerText = "Please enter valid values for all walls.";
+            return;
+        }
+
+        // Keep dimensions in square feet if using imperial units
+        if (!isMetric) {
+            // No conversion needed; keep dimensions in feet
+        } else {
+            // Convert dimensions to meters if using metric
+            width *= 0.3048; // Convert feet to meters
+            height *= 0.3048; // Convert feet to meters
+        }
+
+        const wallArea = width * height;
+        totalWallArea += wallArea;
+    }
+
+    for (let i = 0; i < areaWidths.length; i++) {
+        let width = parseFloat(areaWidths[i].value.replace(',', '.').trim());
+        let height = parseFloat(areaHeights[i].value.replace(',', '.').trim());
+
+        if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
+            continue; // Skip invalid entries
+        }
+
+        if (!isMetric) {
+            // No conversion needed; keep dimensions in feet
+        } else {
+            // Convert dimensions to meters if using metric
+            width *= 0.3048;
+            height *= 0.3048;
+        }
+
+        const excludeArea = width * height;
+        totalExcludeArea += excludeArea;
+    }
+
+    const coats = parseInt(document.getElementById('coats').value);
+
+    if (isNaN(coats) || coats < 1) {
+        document.getElementById('result').innerText = "Please enter valid values.";
+        return;
+    }
+
+    // Total area to paint excluding areas
+    const totalAreaPerCoat = totalWallArea - totalExcludeArea;
+
+    if (totalAreaPerCoat <= 0) {
+        document.getElementById('result').innerText = "Excluded areas cannot be greater than the total wall area.";
+        return;
+    }
+
+    // Total area for all coats
+    const totalArea = totalAreaPerCoat * coats;
+
+    let totalPaintNeeded;
+
+    // Calculate total paint needed based on the unit system
+    if (isMetric) {
+        // Calculate paint in liters for metric system
+        totalPaintNeeded = totalArea / coveragePerLiterSqM;
+    } else {
+        // Calculate paint in gallons for imperial system
+        totalPaintNeeded = totalArea / coveragePerGallonSqFt;
+    }
+
+    // Add 10% extra material if checkbox is checked
+    if (checkboxEl.checked) {
+        totalPaintNeeded += totalPaintNeeded * 0.10;
+    }
+
+    appendResultText(totalPaintNeeded, totalAreaPerCoat, isMetric);
+});
+
 const radioButtons = document.querySelectorAll('input[name="unit"]');
 radioButtons.forEach((button) => {
     button.addEventListener('change', () => {
@@ -144,102 +243,31 @@ function updateUnitLabels(selectedUnit) {
     });
 }
 
-document.getElementById('area-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const wallWidths = document.querySelectorAll('.wall-group .width');
-    const wallHeights = document.querySelectorAll('.wall-group .height');
-    const areaWidths = document.querySelectorAll('.exclude-area-group .width');
-    const areaHeights = document.querySelectorAll('.exclude-area-group .height');
-    const checkboxEl = document.querySelector('.checkbox-input');
-
-    let totalWallArea = 0;
-    let totalExcludeArea = 0;
-
-    for (let i = 0; i < wallWidths.length; i++) {
-        const width = parseFloat(wallWidths[i].value.replace(',', '.').trim());
-        const height = parseFloat(wallHeights[i].value.replace(',', '.').trim());
-
-        if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
-            document.getElementById('result').innerText = "Please enter valid values for all walls.";
-            return;
-        }
-
-        const wallArea = width * height;
-        totalWallArea += wallArea;
-    }
-
-    for (let i = 0; i < areaWidths.length; i++) {
-        const width = parseFloat(areaWidths[i].value.replace(',', '.').trim());
-        const height = parseFloat(areaHeights[i].value.replace(',', '.').trim());
-
-        if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
-            continue;
-        }
-
-        const excludeArea = width * height;
-        totalExcludeArea += excludeArea;
-    }
-
-    const coats = parseInt(document.getElementById('coats').value);
-    const litersPerSqM = 0.1;
-
-    if (isNaN(coats) || coats < 1 || litersPerSqM <= 0) {
-        document.getElementById('result').innerText = "Please enter valid values.";
-        return;
-    }
-
-    const totalAreaPerCoat = totalWallArea - totalExcludeArea;
-
-    if (totalAreaPerCoat <= 0) {
-        document.getElementById('result').innerText = "Excluded areas cannot be greater than the total wall area.";
-        return;
-    }
-
-    const totalArea = totalAreaPerCoat * coats;
-    let totalLiters = totalArea * litersPerSqM;
-
-    if (checkboxEl.checked) {
-        totalLiters += totalLiters * 0.10;
-    }
-
-    checkboxEl.addEventListener('click', () => {
-        if (checkboxEl.checked) {
-            totalLiters += totalLiters * 0.10;
-        } else {
-            totalLiters -= totalLiters * 0.10;
-        }
-        appendResultText(totalLiters, totalAreaPerCoat, litersPerSqM, checkboxEl.checked);
-    });
-
-    appendResultText(totalLiters, totalAreaPerCoat, litersPerSqM, checkboxEl.checked);
-});
-
-function appendResultText(totalLiters, totalAreaPerCoat, litersPerSqM, isCheckboxChecked) {
+//function to append the result text
+function appendResultText(totalPaintNeeded, totalAreaPerCoat, isMetric) {
     const resultElement = document.getElementById('result');
     resultElement.innerHTML = '';
 
-    const roundedLiters = Math.ceil(totalLiters * 10) / 10;
-    const litersText = document.createElement('p');
-    litersText.textContent = `You will need ${roundedLiters} litres of paint`;
+    const roundedPaintNeeded = Math.ceil(totalPaintNeeded * 10) / 10;
+    const paintText = document.createElement('p');
+    paintText.textContent = `You will need ${roundedPaintNeeded} ${isMetric ? 'litres' : 'gallons'} of paint`;
 
     const areaText = document.createElement('p');
-    areaText.textContent = isCheckboxChecked ?
-        `Based on your total area of ${totalAreaPerCoat.toFixed(2)}m² and +10% extra material.` :
-        `Based on your total area of ${totalAreaPerCoat.toFixed(2)}m².`;
+    areaText.textContent = `Based on your total area of ${totalAreaPerCoat.toFixed(2)} ${isMetric ? 'm²' : 'ft²'} per coat.`;
 
     const coverageText = document.createElement('p');
-    coverageText.textContent = `This is based on a coverage of ${(1 / litersPerSqM).toFixed(2)}m² per litre of paint. Always check the coverage on the tin before buying.`;
+    coverageText.textContent = `This is based on a coverage of ${(isMetric ? 10 : 350)} ${isMetric ? 'm² per litre' : 'ft² per gallon'} of paint. Always check the coverage on the tin before buying.`;
 
     const extraText = document.createElement('p');
     extraText.textContent = `+10% Our calculation may include more than 10% as we round up to whole tins.`;
 
-    resultElement.appendChild(litersText);
+    resultElement.appendChild(paintText);
     resultElement.appendChild(areaText);
     resultElement.appendChild(coverageText);
     resultElement.appendChild(extraText);
 }
 
+//function to append correct numbers to new walls 
 function updateWallNumbers() {
     const wallGroups = document.querySelectorAll('.wall-group');
     wallGroups.forEach((group, index) => {
@@ -248,6 +276,7 @@ function updateWallNumbers() {
     });
 }
 
+//function to append correct numbers to new exclude areas
 function updateAreaNumbers() {
     const areaGroups = document.querySelectorAll('.exclude-area-group');
     areaGroups.forEach((group, index) => {
