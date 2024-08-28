@@ -1,4 +1,4 @@
-document.getElementById('add-wall').addEventListener('click', function() {
+document.getElementById('add-wall').addEventListener('click', function () {
     const wallsContainer = document.getElementById('walls-container');
     const wallGroups = document.querySelectorAll('.wall-group');
     const wallNumber = wallGroups.length + 1;
@@ -34,7 +34,7 @@ document.getElementById('add-wall').addEventListener('click', function() {
     deleteButton.type = 'button';
     deleteButton.className = 'delete-button';
     deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
-    deleteButton.addEventListener('click', function() {
+    deleteButton.addEventListener('click', function () {
         wallsContainer.removeChild(newWallGroup);
         updateWallNumbers();
     });
@@ -50,7 +50,7 @@ document.getElementById('add-wall').addEventListener('click', function() {
     wallsContainer.appendChild(newWallGroup);
 });
 
-document.getElementById('add-area').addEventListener('click', function() {
+document.getElementById('add-area').addEventListener('click', function () {
     const areasContainer = document.getElementById('areas-container');
     const areaGroups = document.querySelectorAll('.exclude-area-group');
     const areaNumber = areaGroups.length + 1;
@@ -86,7 +86,7 @@ document.getElementById('add-area').addEventListener('click', function() {
     deleteButton.type = 'button';
     deleteButton.className = 'delete-button';
     deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
-    deleteButton.addEventListener('click', function() {
+    deleteButton.addEventListener('click', function () {
         areasContainer.removeChild(newAreaGroup);
         updateAreaNumbers();
     });
@@ -102,14 +102,43 @@ document.getElementById('add-area').addEventListener('click', function() {
     areasContainer.appendChild(newAreaGroup);
 });
 
-document.getElementById('area-form').addEventListener('submit', function(e) {
+document.getElementById('area-form').addEventListener('submit', function (e) {
+    function attachResultText() {
+        // Clear previous results
+        const resultElement = document.getElementById('result');
+        resultElement.innerHTML = ''; // Clear previous results
+
+        // Create elements to display the results
+        const litersText = document.createElement('p');
+        let roundedLiters = Math.ceil(totalLiters * 10) / 10;
+        litersText.textContent = `You will need ${roundedLiters} litres of paint`;
+
+        const areaText = document.createElement('p');
+        if(checkboxEl.checked){
+            areaText.textContent = `Based on your total area of ${totalAreaPerCoat.toFixed(2)}m² and +10% extra material.`;
+         } else {
+            areaText.textContent = `Based on your total area of ${totalAreaPerCoat.toFixed(2)}m².`;
+         }
+
+        const coverageText = document.createElement('p');
+        coverageText.textContent = `This is based on a coverage of ${(1 / litersPerSqM).toFixed(2)}m² per litre of paint. Always check the coverage on the tin before buying.`;
+
+        const extraText = document.createElement('p');
+        extraText.textContent = `+10% Our calculation may include more than 10% as we round up to whole tins.`;
+
+        // Append the result elements to the result container
+        resultElement.appendChild(litersText);
+        resultElement.appendChild(areaText);
+        resultElement.appendChild(coverageText);
+        resultElement.appendChild(extraText);
+    }
     e.preventDefault();
 
     const wallWidths = document.querySelectorAll('.wall-group .width');
     const wallHeights = document.querySelectorAll('.wall-group .height');
     const areaWidths = document.querySelectorAll('.exclude-area-group .width');
     const areaHeights = document.querySelectorAll('.exclude-area-group .height');
-    const checkboxEl = document.querySelector('.checkbox-input');    
+    const checkboxEl = document.querySelector('.checkbox-input');
 
     let totalWallArea = 0;
     let totalExcludeArea = 0;
@@ -161,35 +190,26 @@ document.getElementById('area-form').addEventListener('submit', function(e) {
 
     // Calculate total liters of paint needed
     let totalLiters = totalArea * litersPerSqM;
-    
+
     // Add 10% extra material
-    if(checkboxEl.checked){
+    if (checkboxEl.checked) {
         totalLiters += totalLiters * 0.10;
     }
 
-    // Clear previous results
-    const resultElement = document.getElementById('result');
-    resultElement.innerHTML = ''; // Clear previous results
+    checkboxEl.addEventListener('click', () => {
 
-    // Create elements to display the results
-    const litersText = document.createElement('p');
-    let roundedLiters = Math.ceil(totalLiters * 10) / 10;
-    litersText.textContent = `You will need ${roundedLiters} litres of paint`;
+        if (checkboxEl.checked) {
+            totalLiters += totalLiters * 0.10;
+        } else {
+            totalLiters -= totalLiters * 0.10;
+        }
 
-    const areaText = document.createElement('p');
-    areaText.textContent = `Based on your total area of ${totalAreaPerCoat.toFixed(2)}m² and +10% extra material.`;
+        attachResultText();
 
-    const coverageText = document.createElement('p');
-    coverageText.textContent = `This is based on a coverage of ${(1 / litersPerSqM).toFixed(2)}m² per litre of paint. Always check the coverage on the tin before buying.`;
+    })    
 
-    const extraText = document.createElement('p');
-    extraText.textContent = `+10% Our calculation may include more than 10% as we round up to whole tins.`;
+    attachResultText();
 
-    // Append the result elements to the result container
-    resultElement.appendChild(litersText);
-    resultElement.appendChild(areaText);
-    resultElement.appendChild(coverageText);
-    resultElement.appendChild(extraText);
 });
 
 function updateWallNumbers() {
