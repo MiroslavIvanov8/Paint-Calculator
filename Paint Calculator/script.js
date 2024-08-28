@@ -20,6 +20,10 @@ document.getElementById('add-wall').addEventListener('click', function () {
     widthInput.className = 'width';
     widthInput.step = '0.01';
     widthInput.required = true;
+    
+    const widthUnitLabel = document.createElement('span');
+    widthUnitLabel.className = 'unit-label';
+    widthUnitLabel.textContent = getCurrentUnit();
 
     const heightLabel = document.createElement('label');
     heightLabel.textContent = 'Height';
@@ -29,6 +33,10 @@ document.getElementById('add-wall').addEventListener('click', function () {
     heightInput.className = 'height';
     heightInput.step = '0.01';
     heightInput.required = true;
+    
+    const heightUnitLabel = document.createElement('span');
+    heightUnitLabel.className = 'unit-label';
+    heightUnitLabel.textContent = getCurrentUnit();
 
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
@@ -41,8 +49,10 @@ document.getElementById('add-wall').addEventListener('click', function () {
 
     flexboxContainer.appendChild(widthLabel);
     flexboxContainer.appendChild(widthInput);
+    flexboxContainer.appendChild(widthUnitLabel);
     flexboxContainer.appendChild(heightLabel);
     flexboxContainer.appendChild(heightInput);
+    flexboxContainer.appendChild(heightUnitLabel);
     flexboxContainer.appendChild(deleteButton);
 
     newWallGroup.appendChild(wallNumberText);
@@ -72,6 +82,10 @@ document.getElementById('add-area').addEventListener('click', function () {
     widthInput.className = 'width';
     widthInput.step = '0.01';
     widthInput.required = true;
+    
+    const widthUnitLabel = document.createElement('span');
+    widthUnitLabel.className = 'unit-label';
+    widthUnitLabel.textContent = getCurrentUnit();
 
     const heightLabel = document.createElement('label');
     heightLabel.textContent = 'Height';
@@ -81,6 +95,10 @@ document.getElementById('add-area').addEventListener('click', function () {
     heightInput.className = 'height';
     heightInput.step = '0.01';
     heightInput.required = true;
+    
+    const heightUnitLabel = document.createElement('span');
+    heightUnitLabel.className = 'unit-label';
+    heightUnitLabel.textContent = getCurrentUnit();
 
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
@@ -93,8 +111,10 @@ document.getElementById('add-area').addEventListener('click', function () {
 
     flexboxContainer.appendChild(widthLabel);
     flexboxContainer.appendChild(widthInput);
+    flexboxContainer.appendChild(widthUnitLabel);
     flexboxContainer.appendChild(heightLabel);
     flexboxContainer.appendChild(heightInput);
+    flexboxContainer.appendChild(heightUnitLabel);
     flexboxContainer.appendChild(deleteButton);
 
     newAreaGroup.appendChild(areaNumberText);
@@ -102,36 +122,29 @@ document.getElementById('add-area').addEventListener('click', function () {
     areasContainer.appendChild(newAreaGroup);
 });
 
+const radioButtons = document.querySelectorAll('input[name="unit"]');
+radioButtons.forEach((button) => {
+    button.addEventListener('change', () => {
+        const selectedValue = document.querySelector('input[name="unit"]:checked').value;
+        updateUnitLabels(selectedValue);
+    });
+});
+
+// Function to get the current selected unit
+function getCurrentUnit() {
+    const selectedUnit = document.querySelector('input[name="unit"]:checked').value;
+    return selectedUnit === 'metric' ? 'm' : 'ft';
+}
+
+// Function to update all unit labels on the page
+function updateUnitLabels(selectedUnit) {
+    const unitLabels = document.querySelectorAll('.unit-label');
+    unitLabels.forEach(label => {
+        label.textContent = selectedUnit === 'metric' ? 'm' : 'ft';
+    });
+}
+
 document.getElementById('area-form').addEventListener('submit', function (e) {
-    function attachResultText() {
-        // Clear previous results
-        const resultElement = document.getElementById('result');
-        resultElement.innerHTML = ''; // Clear previous results
-
-        // Create elements to display the results
-        const litersText = document.createElement('p');
-        let roundedLiters = Math.ceil(totalLiters * 10) / 10;
-        litersText.textContent = `You will need ${roundedLiters} litres of paint`;
-
-        const areaText = document.createElement('p');
-        if(checkboxEl.checked){
-            areaText.textContent = `Based on your total area of ${totalAreaPerCoat.toFixed(2)}m² and +10% extra material.`;
-         } else {
-            areaText.textContent = `Based on your total area of ${totalAreaPerCoat.toFixed(2)}m².`;
-         }
-
-        const coverageText = document.createElement('p');
-        coverageText.textContent = `This is based on a coverage of ${(1 / litersPerSqM).toFixed(2)}m² per litre of paint. Always check the coverage on the tin before buying.`;
-
-        const extraText = document.createElement('p');
-        extraText.textContent = `+10% Our calculation may include more than 10% as we round up to whole tins.`;
-
-        // Append the result elements to the result container
-        resultElement.appendChild(litersText);
-        resultElement.appendChild(areaText);
-        resultElement.appendChild(coverageText);
-        resultElement.appendChild(extraText);
-    }
     e.preventDefault();
 
     const wallWidths = document.querySelectorAll('.wall-group .width');
@@ -160,7 +173,6 @@ document.getElementById('area-form').addEventListener('submit', function (e) {
         const width = parseFloat(areaWidths[i].value.replace(',', '.').trim());
         const height = parseFloat(areaHeights[i].value.replace(',', '.').trim());
 
-        // If width and height are not provided, skip this iteration
         if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
             continue;
         }
@@ -177,7 +189,6 @@ document.getElementById('area-form').addEventListener('submit', function (e) {
         return;
     }
 
-    // Total area to paint excluding areas
     const totalAreaPerCoat = totalWallArea - totalExcludeArea;
 
     if (totalAreaPerCoat <= 0) {
@@ -185,32 +196,49 @@ document.getElementById('area-form').addEventListener('submit', function (e) {
         return;
     }
 
-    // Total area for all coats
     const totalArea = totalAreaPerCoat * coats;
-
-    // Calculate total liters of paint needed
     let totalLiters = totalArea * litersPerSqM;
 
-    // Add 10% extra material
     if (checkboxEl.checked) {
         totalLiters += totalLiters * 0.10;
     }
 
     checkboxEl.addEventListener('click', () => {
-
         if (checkboxEl.checked) {
             totalLiters += totalLiters * 0.10;
         } else {
             totalLiters -= totalLiters * 0.10;
         }
+        appendResultText(totalLiters, totalAreaPerCoat, litersPerSqM, checkboxEl.checked);
+    });
 
-        attachResultText();
-
-    })    
-
-    attachResultText();
-
+    appendResultText(totalLiters, totalAreaPerCoat, litersPerSqM, checkboxEl.checked);
 });
+
+function appendResultText(totalLiters, totalAreaPerCoat, litersPerSqM, isCheckboxChecked) {
+    const resultElement = document.getElementById('result');
+    resultElement.innerHTML = '';
+
+    const roundedLiters = Math.ceil(totalLiters * 10) / 10;
+    const litersText = document.createElement('p');
+    litersText.textContent = `You will need ${roundedLiters} litres of paint`;
+
+    const areaText = document.createElement('p');
+    areaText.textContent = isCheckboxChecked ?
+        `Based on your total area of ${totalAreaPerCoat.toFixed(2)}m² and +10% extra material.` :
+        `Based on your total area of ${totalAreaPerCoat.toFixed(2)}m².`;
+
+    const coverageText = document.createElement('p');
+    coverageText.textContent = `This is based on a coverage of ${(1 / litersPerSqM).toFixed(2)}m² per litre of paint. Always check the coverage on the tin before buying.`;
+
+    const extraText = document.createElement('p');
+    extraText.textContent = `+10% Our calculation may include more than 10% as we round up to whole tins.`;
+
+    resultElement.appendChild(litersText);
+    resultElement.appendChild(areaText);
+    resultElement.appendChild(coverageText);
+    resultElement.appendChild(extraText);
+}
 
 function updateWallNumbers() {
     const wallGroups = document.querySelectorAll('.wall-group');

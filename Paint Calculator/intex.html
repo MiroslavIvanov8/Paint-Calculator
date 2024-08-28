@@ -1,84 +1,102 @@
-    <!DOCTYPE html>
-    <html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Paint Calculator</title>
-        <link rel="stylesheet" href="styles.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paint Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
 
-    <body>
-        <div class="container">
-            <h1>Paint Calculator</h1>
-            <form id="area-form">
-                <!-- Step 1: Wall Dimensions -->
-                <div id="walls-container">
-                    <h2>1. Wall Dimensions</h2>
-                    <div class="input-group wall-group">
-                        <p><strong>Wall 1</strong></p>
-                        <div class="flexbox-container">
-                            <label for="width">Width</label>
-                            <input type="number" name="width" class="width" step="0.01" required>
-            
-                            <label for="height">Height</label>
-                            <input type="number" name="height" class="height" step="0.01" required>
-            
-                            <button type="button" class="delete-button"><i class="fas fa-trash-alt"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <button type="button" id="add-wall">+ Add Wall</button>
-            
-                <!-- Step 2: Areas to Exclude -->
-                <div id="areas-container">
-                    <h2>2. Areas to Exclude (Windows, Doors, etc.)</h2>
-                    <div class="input-group exclude-area-group">
-                        <p><strong>Area 1</strong></p>
-                        <div class="flexbox-container">
-                            <label for="width">Width</label>
-                            <input type="number" name="width" class="width" step="0.01">
-            
-                            <label for="height">Height</label>
-                            <input type="number" name="height" class="height" step="0.01">
-            
-                            <button type="button" class="delete-button"><i class="fas fa-trash-alt"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <button type="button" id="add-area">+ Add Area</button>
-            
-                <!-- Step 3: Number of Coats -->
-                <div class="input-group">
-                    <h2>3. Number of Coats</h2>
-                    <label for="coats">Number of Coats:</label>
-                    <select id="coats" required>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                    </select>
-                </div>
-            
-                <div class="contingency-checkbox-button">
-                    <label class="contingency-checkbox-label">
-                        <input type="checkbox" class="checkbox-input">
-                        <span class="checkbox-icon">
-                            <svg class="checkbox-tick" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M20.285,5.217a1,1,0,0,0-1.414,0L9,15.089,5.129,11.217a1,1,0,0,0-1.414,1.415l4.586,4.585a1,1,0,0,0,1.415,0L20.285,6.631A1,1,0,0,0,20.285,5.217Z"></path>
-                            </svg>
-                        </span>
-                        <span class="contingency-checkbox-title">Include 10% wastage?</span>
-                    </label>
-                    <p class="contingency-checkbox-text">We recommend purchasing at least 10% extra product to allow for errors, damages or obstacles</p>
-                </div>              
-            
-                <!-- Step 5: Calculate Button -->
-                <button type="submit">Calculate</button>
-            </form>
-            <div id="result"></div>
+<body>
+    <div class="container">
+        <h1>Paint Calculator</h1>
+        <div class="metric-container">
+            <label>
+                <input type="radio" name="unit" value="metric" checked>
+                <span></span> Metric
+            </label>
+            <label>
+                <input type="radio" name="unit" value="imperial">
+                <span></span> Imperial
+            </label>
         </div>
-        <script src="script.js"></script>
-    </body>
+        <form id="area-form">
+            <!-- Step 1: Wall Dimensions -->
+            <div id="walls-container">
+                <h2>1. Wall Dimensions</h2>
+                <div class="input-group wall-group">
+                    <p><strong>Wall 1</strong></p>
+                    <div class="flexbox-container">
+                        <label for="width">Width</label>
+                        <input type="number" name="width" class="width" step="0.01" required>
+                        <span class="unit-label">m</span> 
+                    
+                        <label for="height">Height</label>
+                        <input type="number" name="height" class="height" step="0.01" required>
+                        <span class="unit-label">m</span> 
+                    
+                        <button type="button" class="delete-button"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+            <button type="button" id="add-wall">+ Add Wall</button>
 
-    </html>
+            <!-- Step 2: Areas to Exclude -->
+            <div id="areas-container">
+                <h2>2. Areas to Exclude (Windows, Doors, etc.)</h2>
+                <div class="input-group exclude-area-group">
+                    <p><strong>Area 1</strong></p>
+                    <div class="flexbox-container">
+                        <label for="width">Width</label>
+                        <input type="number" name="width" class="width" step="0.01">
+                        <span class="unit-label">m</span> 
+                        
+                        <label for="height">Height</label>
+                        <input type="number" name="height" class="height" step="0.01">
+                        <span class="unit-label">m</span> 
+
+                        <button type="button" class="delete-button"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+            <button type="button" id="add-area">+ Add Area</button>
+
+            <!-- Step 3: Number of Coats -->
+            <div class="input-group">
+                <h2>3. Number of Coats</h2>
+                <label for="coats">Number of Coats:</label>
+                <select id="coats" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
+
+            <div class="contingency-checkbox-button">
+                <label class="contingency-checkbox-label">
+                    <input type="checkbox" class="checkbox-input">
+                    <span class="checkbox-icon">
+                        <svg class="checkbox-tick" width="24" height="24" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M20.285,5.217a1,1,0,0,0-1.414,0L9,15.089,5.129,11.217a1,1,0,0,0-1.414,1.415l4.586,4.585a1,1,0,0,0,1.415,0L20.285,6.631A1,1,0,0,0,20.285,5.217Z">
+                            </path>
+                        </svg>
+                    </span>
+                    <span class="contingency-checkbox-title">Include 10% wastage?</span>
+                </label>
+                <p class="contingency-checkbox-text">We recommend purchasing at least 10% extra product to allow for
+                    errors, damages or obstacles</p>
+            </div>
+
+            <!-- Step 5: Calculate Button -->
+            <button type="submit">Calculate</button>
+        </form>
+        <div id="result"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

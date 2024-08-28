@@ -1,184 +1,247 @@
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        height: 100vh;
-        padding-top: 20px;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            padding-top: 20px;
+        }
 
-    .container {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        max-width: 500px;
-        width: 100%;
-    }
+        .metric-container {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* Space between the radio buttons */
+        }
+        
+        .metric-container label {
+            position: relative;
+            padding-left: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .metric-container input[type="radio"] {
+            position: absolute;
+            opacity: 0; /* Hide the default radio button */
+        }
+        
+        .metric-container input[type="radio"] + span {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #f4f4f4;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        
+        .metric-container input[type="radio"]:checked + span {
+            border-color: #28a745; /* Green border when checked */
+        }
+        
+        .metric-container input[type="radio"]:checked + span:before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #28a745; /* Green dot when checked */
+        }
 
-    .flexbox-container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
 
-    .input-group label, 
-    .input-group input {
-        flex-grow: 1;
-        margin-right: 10px;
-        width: 150px;
-    }
+        .flexbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
 
-    .flexbox-container input {
-        max-width: 100px;
-    }
+        .input-group label,
+        .input-group input {
+            flex-grow: 1;
+            margin-right: 10px;
+            width: 150px;
+        }
 
-    .delete-button {
-        background-color: #dc3545;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        padding: 8px;
-        cursor: pointer;
-    }
+        .flexbox-container input {
+            max-width: 100px;
+        }
 
-    .delete-button i {
-        margin: 0;
-    }
+        .delete-button {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 8px;
+            cursor: pointer;
+        }
 
-    .delete-button:hover {
-        background-color: #c82333;
-    }
+        .delete-button i {
+            margin: 0;
+        }
 
-    h1, h2 {
-        margin-bottom: 20px;
-    }
+        .delete-button:hover {
+            background-color: #c82333;
+        }
 
-    .input-group {
-        margin-bottom: 20px;
-        text-align: left;
-    }
+        h1,
+        h2 {
+            margin-bottom: 20px;
+        }
 
-    .extra-material-box {
-        background-color: #e9ecef;
-        border-radius: 5px;
-        padding: 15px;
-        margin-top: 20px;
-        border: 1px solid #ddd;
-    }
 
-    .extra-material-label {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-    }
+        h2 {
+            text-align: left;
+        }
 
-    .extra-material-text {
-        margin: 0;
-        font-size: 14px;
-        color: #6c757d;
-    }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
 
-    label {
-        display: block;
-        margin-bottom: 5px;
-    }
+        .extra-material-box {
+            background-color: #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+        }
 
-    input, select {
-        width: 100%;
-        padding: 8px;
-        margin: 0;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        box-sizing: border-box;
-    }
+        .extra-material-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
 
-    button {
-        width: 100%;
-        padding: 10px;
-        background-color: #28a745;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
+        .extra-material-text {
+            margin: 0;
+            font-size: 14px;
+            color: #6c757d;
+        }
 
-    button[type='submit']{
-        margin-top: 2em;
-    }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
 
-    button:hover {
-        background-color: #218838;
-    }
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin: 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
 
-    #result {
-        margin-top: 20px;
-        font-size: 18px;
-        font-weight: bold;
-    }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-    .contingency-checkbox-button {
-        background-color: #f4f4f4;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 15px;
-        margin-top: 20px;
-        cursor: pointer;
-        text-align: left;
-    }
-    
-    .contingency-checkbox-label {
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-    }
-    
-    .checkbox-input {
-        display: none;
-    }
-    
-    .checkbox-icon {
-        width: 24px;
-        height: 24px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #fff;
-        border: 2px solid #28a745;
-        border-radius: 3px;
-        margin-right: 10px;
-        transition: background-color 0.2s, border-color 0.2s;
-        position: relative;
-    }
-    
-    .checkbox-tick {
-        width: 100%;
-        height: 100%;
-        fill: none; /* Start with the checkmark hidden */
-        stroke: #28a745;
-        stroke-width: 3;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        visibility: hidden; /* Hide checkmark initially */
-    }
-    
-    .checkbox-input:checked + .checkbox-icon .checkbox-tick {
-        visibility: visible; /* Show checkmark when checkbox is checked */
-    }
-    
-    .contingency-checkbox-title {
-        font-size: 16px;
-        color: #333;
-    }
-    
-    .contingency-checkbox-text {
-        font-size: 14px;
-        color: #666;
-        margin-top: 8px;
-    }
+        button[type='submit'] {
+            margin-top: 2em;
+        }
 
+        button:hover {
+            background-color: #218838;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .contingency-checkbox-button {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .contingency-checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .checkbox-input {
+            display: none;
+        }
+
+        .checkbox-icon {
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            border: 2px solid #28a745;
+            border-radius: 3px;
+            margin-right: 10px;
+            transition: background-color 0.2s, border-color 0.2s;
+            position: relative;
+        }
+
+        .checkbox-tick {
+            width: 100%;
+            height: 100%;
+            fill: none;
+            /* Start with the checkmark hidden */
+            stroke: #28a745;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            visibility: hidden;
+            /* Hide checkmark initially */
+        }
+
+        .checkbox-input:checked+.checkbox-icon .checkbox-tick {
+            visibility: visible;
+            /* Show checkmark when checkbox is checked */
+        }
+
+        .contingency-checkbox-title {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .contingency-checkbox-text {
+            font-size: 14px;
+            color: #666;
+            margin-top: 8px;
+        }
+        
+        .unit-label {
+            margin-right: 1em;
+            margin-left: -5px;
+            font-weight: bold;
+            color: #555;
+        }
