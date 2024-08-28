@@ -130,7 +130,7 @@ document.getElementById('area-form').addEventListener('submit', function (e) {
     const areaWidths = document.querySelectorAll('.exclude-area-group .width');
     const areaHeights = document.querySelectorAll('.exclude-area-group .height');
     const checkboxEl = document.querySelector('.checkbox-input');
-
+    
     // Determine the selected unit system
     const selectedUnit = document.querySelector('input[name="unit"]:checked').value;
     const isMetric = selectedUnit === 'metric';
@@ -152,7 +152,7 @@ document.getElementById('area-form').addEventListener('submit', function (e) {
         }
 
         // Keep dimensions in square feet if using imperial units
-        if (!isMetric) {
+        if (isMetric) {
             // No conversion needed; keep dimensions in feet
         } else {
             // Convert dimensions to meters if using metric
@@ -172,7 +172,7 @@ document.getElementById('area-form').addEventListener('submit', function (e) {
             continue; // Skip invalid entries
         }
 
-        if (!isMetric) {
+        if (isMetric) {
             // No conversion needed; keep dimensions in feet
         } else {
             // Convert dimensions to meters if using metric
@@ -218,7 +218,15 @@ document.getElementById('area-form').addEventListener('submit', function (e) {
         totalPaintNeeded += totalPaintNeeded * 0.10;
     }
 
-    appendResultText(totalPaintNeeded, totalAreaPerCoat, isMetric);
+    checkboxEl.addEventListener('click', (e) => {
+        if(checkboxEl.checked){
+            appendResultText(totalPaintNeeded + totalPaintNeeded * 0.10, totalAreaPerCoat, isMetric, checkboxEl.checked);
+        } else {
+            appendResultText(totalPaintNeeded, totalAreaPerCoat, isMetric,  checkboxEl.checked);
+        }
+    })
+
+    appendResultText(totalPaintNeeded, totalAreaPerCoat, isMetric, checkboxEl.checked);
 });
 
 const radioButtons = document.querySelectorAll('input[name="unit"]');
@@ -244,13 +252,13 @@ function updateUnitLabels(selectedUnit) {
 }
 
 //function to append the result text
-function appendResultText(totalPaintNeeded, totalAreaPerCoat, isMetric) {
+function appendResultText(totalPaintNeeded, totalAreaPerCoat, isMetric, isExtraIncluded) {
     const resultElement = document.getElementById('result');
     resultElement.innerHTML = '';
 
     const roundedPaintNeeded = Math.ceil(totalPaintNeeded * 10) / 10;
     const paintText = document.createElement('p');
-    paintText.textContent = `You will need ${roundedPaintNeeded} ${isMetric ? 'litres' : 'gallons'} of paint`;
+    paintText.textContent = `You will need ${roundedPaintNeeded} ${isMetric ? 'litres' : 'gallons'} of paint${isExtraIncluded ? ' with +10% extra material.' : '.'}`;
 
     const areaText = document.createElement('p');
     areaText.textContent = `Based on your total area of ${totalAreaPerCoat.toFixed(2)} ${isMetric ? 'm²' : 'ft²'} per coat.`;
@@ -258,13 +266,11 @@ function appendResultText(totalPaintNeeded, totalAreaPerCoat, isMetric) {
     const coverageText = document.createElement('p');
     coverageText.textContent = `This is based on a coverage of ${(isMetric ? 10 : 350)} ${isMetric ? 'm² per litre' : 'ft² per gallon'} of paint. Always check the coverage on the tin before buying.`;
 
-    const extraText = document.createElement('p');
-    extraText.textContent = `+10% Our calculation may include more than 10% as we round up to whole tins.`;
-
     resultElement.appendChild(paintText);
     resultElement.appendChild(areaText);
     resultElement.appendChild(coverageText);
-    resultElement.appendChild(extraText);
+
+    
 }
 
 //function to append correct numbers to new walls 
