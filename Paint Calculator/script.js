@@ -161,12 +161,8 @@ document.getElementById('area-form').addEventListener('submit', function(e) {
 
     // Calculate total liters of paint needed
     let totalLiters = totalArea * litersPerSqM;
-
+    
     // Add 10% extra material
-    totalLiters += totalLiters * 0.1;
-
-    //Add 10% bonus or no
-    debugger;
     if(checkboxEl.checked){
         totalLiters += totalLiters * 0.10;
     }
@@ -177,7 +173,8 @@ document.getElementById('area-form').addEventListener('submit', function(e) {
 
     // Create elements to display the results
     const litersText = document.createElement('p');
-    litersText.textContent = `You will need ${totalLiters.toFixed(2)} litres of paint`;
+    let roundedLiters = Math.ceil(totalLiters * 10) / 10;
+    litersText.textContent = `You will need ${roundedLiters} litres of paint`;
 
     const areaText = document.createElement('p');
     areaText.textContent = `Based on your total area of ${totalAreaPerCoat.toFixed(2)}m² and +10% extra material.`;
