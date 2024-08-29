@@ -229,6 +229,39 @@ document.getElementById('area-form').addEventListener('submit', function (e) {
     appendResultText(totalPaintNeeded, totalAreaPerCoat, isMetric, checkboxEl.checked);
 });
 
+const deleteButtons = document.querySelectorAll('.delete-button');
+
+deleteButtons.forEach((button) => {
+    button.addEventListener('click', (e) => {
+        
+        function deleteChildren(className){
+            const wallsGroup = document.querySelectorAll(`.${className}`);
+            const widthInput = wallsGroup[0].querySelector('.flexbox-container input[name=width]');
+            const heightInput = wallsGroup[0].querySelector('.flexbox-container input[name=height]');
+    
+            widthInput.value = '';
+            heightInput.value = '';;
+            
+            for (let i = 1; i < wallsGroup.length; i++) {                
+                wallsGroup[i].remove();            
+            }        
+        }
+
+        const wallGroup = (e.target.closest('.wall-group'));
+        const excludeGroup = (e.target.closest('.exclude-area-group')); 
+        
+        
+        const currentTargetParent = e.target.parentNode.parentNode
+        if(currentTargetParent === wallGroup){
+            deleteChildren(wallGroup.classList[1]);
+        } else {
+            deleteChildren(excludeGroup.classList[1]);
+        }
+        
+    })
+})
+
+
 const radioButtons = document.querySelectorAll('input[name="unit"]');
 radioButtons.forEach((button) => {
     button.addEventListener('change', () => {
