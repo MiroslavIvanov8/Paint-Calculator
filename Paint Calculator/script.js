@@ -3,6 +3,10 @@ document.getElementById('add-wall').addEventListener('click', function () {
     const wallGroups = document.querySelectorAll('.wall-group');
     const wallNumber = wallGroups.length + 1;
 
+    if(wallNumber > 1){
+        document.querySelector('.wall-delete').style.visibility = 'visible';
+    }
+
     const newWallGroup = document.createElement('div');
     newWallGroup.className = 'input-group wall-group';
 
@@ -64,6 +68,10 @@ document.getElementById('add-area').addEventListener('click', function () {
     const areasContainer = document.getElementById('areas-container');
     const areaGroups = document.querySelectorAll('.exclude-area-group');
     const areaNumber = areaGroups.length + 1;
+
+    if(areaNumber > 1){
+        document.querySelector('.area-delete').style.visibility = 'visible';
+    }
 
     const newAreaGroup = document.createElement('div');
     newAreaGroup.className = 'input-group exclude-area-group';
@@ -244,7 +252,6 @@ function removeNewlyAddedGroups(groups){
 
 // Function to clear inputs of the first wall/area delete all other walls/areas
 function clearInputsAndDeleteOthers(className) {
-    debugger;
     const groups = document.querySelectorAll(`.${className}`);
     const firstGroup = groups[0];
     
@@ -272,7 +279,8 @@ document.querySelectorAll('.delete-button').forEach((button) => {
             if (currentGroup) {
                 deleteSingleItem(currentGroup);
             }
-        }
+        }           
+        button.style.visibility = 'hidden';
     });
 });
 
