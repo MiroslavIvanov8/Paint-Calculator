@@ -229,37 +229,52 @@ document.getElementById('area-form').addEventListener('submit', function (e) {
     appendResultText(totalPaintNeeded, totalAreaPerCoat, isMetric, checkboxEl.checked);
 });
 
-const deleteButtons = document.querySelectorAll('.delete-button');
+function clearGroupInputs(group){
+    const widthInput = group.querySelector('.flexbox-container input[name=width]');
+    const heightInput = group.querySelector('.flexbox-container input[name=height]');
+    widthInput.value = '';
+    heightInput.value = '';
+}
 
-deleteButtons.forEach((button) => {
-    button.addEventListener('click', (e) => {
-        
-        function deleteChildren(className){
-            const wallsGroup = document.querySelectorAll(`.${className}`);
-            const widthInput = wallsGroup[0].querySelector('.flexbox-container input[name=width]');
-            const heightInput = wallsGroup[0].querySelector('.flexbox-container input[name=height]');
+function removeNewlyAddedGroups(groups){
+    for (let i = 1; i < groups.length; i++) {
+        groups[i].remove();
+    }
+}
+
+// Function to clear inputs of the first wall/area delete all other walls/areas
+function clearInputsAndDeleteOthers(className) {
+    debugger;
+    const groups = document.querySelectorAll(`.${className}`);
+    const firstGroup = groups[0];
     
-            widthInput.value = '';
-            heightInput.value = '';;
-            
-            for (let i = 1; i < wallsGroup.length; i++) {                
-                wallsGroup[i].remove();            
-            }        
-        }
+    clearGroupInputs(firstGroup);    
+    
+    // Remove all other newly added groups
+    removeNewlyAddedGroups(groups)
+   
+}
+document.querySelectorAll('.delete-button').forEach((button) => {
+    button.addEventListener('click', (e) => {
+        const wallGroup = e.target.closest('.wall-group');
+        const excludeGroup = e.target.closest('.exclude-area-group');
 
-        const wallGroup = (e.target.closest('.wall-group'));
-        const excludeGroup = (e.target.closest('.exclude-area-group')); 
-        
-        
-        const currentTargetParent = e.target.parentNode.parentNode
-        if(currentTargetParent === wallGroup){
-            deleteChildren(wallGroup.classList[1]);
+        // Check if the clicked delete button belongs to the first wall or area
+        if (wallGroup && wallGroup.isSameNode(document.querySelector('.wall-group'))) {
+            // Clear inputs and delete all other walls
+            clearInputsAndDeleteOthers('wall-group');
+        } else if (excludeGroup && excludeGroup.isSameNode(document.querySelector('.exclude-area-group'))) {
+            // Clear inputs and delete all other exclude areas
+            clearInputsAndDeleteOthers('exclude-area-group');
         } else {
-            deleteChildren(excludeGroup.classList[1]);
+            // For newly added items, just delete the specific item
+            const currentGroup = wallGroup || excludeGroup;
+            if (currentGroup) {
+                deleteSingleItem(currentGroup);
+            }
         }
-        
-    })
-})
+    });
+});
 
 
 const radioButtons = document.querySelectorAll('input[name="unit"]');
