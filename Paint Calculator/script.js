@@ -1,10 +1,10 @@
 document.getElementById('add-wall').addEventListener('click', function () {
     const wallsContainer = document.getElementById('walls-container');
     const wallGroups = document.querySelectorAll('.wall-group');
-    const wallNumber = wallGroups.length + 1;
+    let wallNumber = wallGroups.length + 1;
 
-    if(wallNumber > 1){
-        document.querySelector('.wall-delete').style.visibility = 'visible';
+    if(wallNumber === 2){
+        toggleVisibility('wall-delete');
     }
 
     const newWallGroup = document.createElement('div');
@@ -47,8 +47,11 @@ document.getElementById('add-wall').addEventListener('click', function () {
     deleteButton.className = 'delete-button';
     deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
     deleteButton.addEventListener('click', function () {
+        wallNumber--;
         wallsContainer.removeChild(newWallGroup);
-        updateWallNumbers();
+        if(wallNumber === 1){
+            toggleVisibility('wall-delete');
+        }
     });
 
     flexboxContainer.appendChild(widthLabel);
@@ -67,10 +70,10 @@ document.getElementById('add-wall').addEventListener('click', function () {
 document.getElementById('add-area').addEventListener('click', function () {
     const areasContainer = document.getElementById('areas-container');
     const areaGroups = document.querySelectorAll('.exclude-area-group');
-    const areaNumber = areaGroups.length + 1;
+    let areaNumber = areaGroups.length + 1;
 
-    if(areaNumber > 1){
-        document.querySelector('.area-delete').style.visibility = 'visible';
+    if(areaNumber === 2){
+        toggleVisibility('area-delete');
     }
 
     const newAreaGroup = document.createElement('div');
@@ -113,8 +116,11 @@ document.getElementById('add-area').addEventListener('click', function () {
     deleteButton.className = 'delete-button';
     deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
     deleteButton.addEventListener('click', function () {
+        areaNumber--;
         areasContainer.removeChild(newAreaGroup);
-        updateAreaNumbers();
+        if(areaNumber === 1){
+            toggleVisibility('area-delete')
+        }
     });
 
     flexboxContainer.appendChild(widthLabel);
@@ -237,6 +243,36 @@ document.getElementById('area-form').addEventListener('submit', function (e) {
     appendResultText(totalPaintNeeded, totalAreaPerCoat, isMetric, checkboxEl.checked);
 });
 
+document.querySelectorAll('.delete-button').forEach((button) => {
+    button.addEventListener('click', (e) => {
+        const wallGroup = e.target.closest('.wall-group');
+        const excludeGroup = e.target.closest('.exclude-area-group');
+
+        // Check if the clicked delete button belongs to the first wall or area
+        if (wallGroup && wallGroup.isSameNode(document.querySelector('.wall-group'))) {
+            // Clear inputs and delete all other walls
+            clearInputsAndDeleteOthers('wall-group');
+        } else if (excludeGroup && excludeGroup.isSameNode(document.querySelector('.exclude-area-group'))) {
+            // Clear inputs and delete all other exclude areas
+            clearInputsAndDeleteOthers('exclude-area-group');
+        } else {
+            // For newly added items, just delete the specific item
+            const currentGroup = wallGroup || excludeGroup;
+            if (currentGroup) {
+                deleteSingleItem(currentGroup);
+            }
+        }           
+        button.style.visibility = 'hidden';
+    });
+});
+
+document.querySelectorAll('input[name="unit"]').forEach((button) => {
+    button.addEventListener('change', () => {
+        const selectedValue = document.querySelector('input[name="unit"]:checked').value;
+        updateUnitLabels(selectedValue);
+    });
+});
+
 function clearGroupInputs(group){
     const widthInput = group.querySelector('.flexbox-container input[name=width]');
     const heightInput = group.querySelector('.flexbox-container input[name=height]');
@@ -261,37 +297,6 @@ function clearInputsAndDeleteOthers(className) {
     removeNewlyAddedGroups(groups)
    
 }
-document.querySelectorAll('.delete-button').forEach((button) => {
-    button.addEventListener('click', (e) => {
-        const wallGroup = e.target.closest('.wall-group');
-        const excludeGroup = e.target.closest('.exclude-area-group');
-
-        // Check if the clicked delete button belongs to the first wall or area
-        if (wallGroup && wallGroup.isSameNode(document.querySelector('.wall-group'))) {
-            // Clear inputs and delete all other walls
-            clearInputsAndDeleteOthers('wall-group');
-        } else if (excludeGroup && excludeGroup.isSameNode(document.querySelector('.exclude-area-group'))) {
-            // Clear inputs and delete all other exclude areas
-            clearInputsAndDeleteOthers('exclude-area-group');
-        } else {
-            // For newly added items, just delete the specific item
-            const currentGroup = wallGroup || excludeGroup;
-            if (currentGroup) {
-                deleteSingleItem(currentGroup);
-            }
-        }           
-        button.style.visibility = 'hidden';
-    });
-});
-
-
-const radioButtons = document.querySelectorAll('input[name="unit"]');
-radioButtons.forEach((button) => {
-    button.addEventListener('change', () => {
-        const selectedValue = document.querySelector('input[name="unit"]:checked').value;
-        updateUnitLabels(selectedValue);
-    });
-});
 
 // Function to get the current selected unit
 function getCurrentUnit() {
@@ -329,20 +334,11 @@ function appendResultText(totalPaintNeeded, totalAreaPerCoat, isMetric, isExtraI
     
 }
 
-//function to append correct numbers to new walls 
-function updateWallNumbers() {
-    const wallGroups = document.querySelectorAll('.wall-group');
-    wallGroups.forEach((group, index) => {
-        const wallNumberText = group.querySelector('p strong');
-        wallNumberText.textContent = `Wall ${index + 1}`;
-    });
-}
-
-//function to append correct numbers to new exclude areas
-function updateAreaNumbers() {
-    const areaGroups = document.querySelectorAll('.exclude-area-group');
-    areaGroups.forEach((group, index) => {
-        const areaNumberText = group.querySelector('p strong');
-        areaNumberText.textContent = `Area ${index + 1}`;
-    });
+function toggleVisibility(classItem){
+    const element =  document.querySelector(`.${classItem}`)
+   if(element.style.visibility === 'hidden'){
+    element.style.visibility = 'visible';
+   } else {
+    element.style.visibility = 'hidden';
+   }
 }

@@ -13,9 +13,10 @@
         .metric-container {
             display: flex;
             align-items: center;
-            gap: 20px; /* Space between the radio buttons */
+            gap: 20px;
+            /* Space between the radio buttons */
         }
-        
+
         .metric-container label {
             position: relative;
             padding-left: 30px;
@@ -23,13 +24,14 @@
             font-size: 16px;
             color: #333;
         }
-        
+
         .metric-container input[type="radio"] {
             position: absolute;
-            opacity: 0; /* Hide the default radio button */
+            opacity: 0;
+            /* Hide the default radio button */
         }
-        
-        .metric-container input[type="radio"] + span {
+
+        .metric-container input[type="radio"]+span {
             position: absolute;
             left: 0;
             top: 0;
@@ -40,12 +42,13 @@
             border-radius: 50%;
             transition: background-color 0.2s, border-color 0.2s;
         }
-        
-        .metric-container input[type="radio"]:checked + span {
-            border-color: #28a745; /* Green border when checked */
+
+        .metric-container input[type="radio"]:checked+span {
+            border-color: #28a745;
+            /* Green border when checked */
         }
-        
-        .metric-container input[type="radio"]:checked + span:before {
+
+        .metric-container input[type="radio"]:checked+span:before {
             content: "";
             position: absolute;
             top: 50%;
@@ -54,7 +57,8 @@
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background-color: #28a745; /* Green dot when checked */
+            background-color: #28a745;
+            /* Green dot when checked */
         }
 
         .container {
@@ -238,10 +242,43 @@
             color: #666;
             margin-top: 8px;
         }
-        
+
         .unit-label {
             margin-right: 1em;
             margin-left: -5px;
             font-weight: bold;
             color: #555;
+        }
+
+        .add-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px; /* Space between the icon and text */
+            padding: 10px;
+            background-color: transparent; /* Ensure background does not change */
+            color: #28a745; /* Green color for the icon and text */
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .add-button i {
+            font-size: 20px; /* Size of the icon */
+            color: #28a745; /* Green color for the icon */
+            text-decoration: none; /* Ensure icon is never underlined */
+        }
+        
+        .add-button:hover {
+            background-color: transparent;
+            /* No background change on hover */
+        }
+        
+        .add-button:hover span {
+            text-decoration: underline; /* Underline text on hover */
+        }
+        
+        .add-button:hover i {
+            transform: scale(1.1); /* Slightly increase the size of the icon on hover */
         }
